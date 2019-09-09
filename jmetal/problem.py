@@ -1,10 +1,9 @@
-import math
 import random
-
-import math
 
 from jmetal.core.problem import PermutationProblem
 from jmetal.core.solution import PermutationSolution, IntegerSolution
+from utils import sort_update_actions
+
 
 class TCPCI(PermutationProblem):
 
@@ -26,20 +25,7 @@ class TCPCI(PermutationProblem):
         PermutationSolution.upper_bound = self.upper_bound
 
     def evaluate(self, solution: PermutationSolution) -> PermutationSolution:
-        pos = solution.variables
-        i = 0
-
-        actions = self.test_cases
-
-        for tc in actions:
-            tc['CalcPrio'] = pos[i]+1
-            i += 1
-
-        # Sort tc by Prio ASC (for backwards scheduling), break ties randomly
-        sorted_tc = sorted(actions, key=lambda x: (x['CalcPrio'], random.random()))
-
-        self.metric.evaluate(sorted_tc)
-
+        self.metric.evaluate(sort_update_actions(solution.variables, self.test_cases))
         solution.objectives[0] = self.metric.fitness
 
         return solution
@@ -54,9 +40,6 @@ class TCPCI(PermutationProblem):
             self.number_of_objectives,
             self.number_of_constraints)
 
-        new_solution.variables = random.sample(range(1, self.number_of_variables+1), self.number_of_variables)
+        new_solution.variables = random.sample(range(1, self.number_of_variables + 1), self.number_of_variables)
 
         return new_solution
-
-
-
