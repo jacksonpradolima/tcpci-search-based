@@ -23,7 +23,7 @@ creator.create("FitnessMax", base.Fitness, weights=(1.0,))
 creator.create("Individual", list, fitness=creator.FitnessMax)
 
 # Empirical parameters
-CXPB, MUTPB, POP, NGEN = 0.8, 0.1, 100, 100
+CXPB, MUTPB, POP, NGEN = 0.8, 0.01, 300, 200
 
 max_cpus = multiprocessing.cpu_count()
 max_cpus = max_cpus - 1 if max_cpus > 1 else max_cpus
@@ -76,16 +76,14 @@ def run_optimal(dataset, repo_path, output_dir, sched_time_ratio):
                                                                     sched_time_ratio)
 
     print(f"Calculating optimal values for '{scenario_provider.name}'")
-    print(f"Saving in {output_dir}{dataset}.csv")
 
     metric = NAPFDMetric('Verdict') if dataset in ['iofrol', 'paintcontrol', 'gsdtsr'] else NAPFDMetric()
 
-    with open(f"{output_dir}{dataset}.csv", "w") as f:
-        # Header
-        f.write("experiment;step;policy;reward_function;prioritization_time;detected;missed;tests_ran;tests_not_ran;" +
-                "ttf;time_reduction;fitness;avg_precision\n")
-        f.flush()
+    all_data_file = "experiment;step;policy;reward_function;prioritization_time;detected;missed;tests_ran;tests_not_ran;"\
+                    + "ttf;time_reduction;fitness;avg_precision\n"
 
+    # 30 independent executions
+    for i in range(1, 31):
         start = time.time()
 
         for (t, vsc) in enumerate(scenario_provider, start=1):
@@ -102,23 +100,26 @@ def run_optimal(dataset, repo_path, output_dir, sched_time_ratio):
 
             metric.evaluate(sort_update_actions(np.array(ind) + 1, actions))
 
-            print(f"Commit: {t} - Fitness: {metric.fitness} - Duration: {end_exp - start_exp}")
+            print(f"Run: {i} - Commit: {t} - Fitness: {metric.fitness} - Duration: {end_exp - start_exp}")
 
             time_reduction = scenario_provider.total_build_duration - metric.ttf_duration
 
-            f.write(
-                f"{1};{t};GA;optimal_approx;{end_exp - start_exp};"
-                f"{metric.detected_failures};{metric.undetected_failures};{len(metric.scheduled_testcases)};"
-                f"{len(metric.unscheduled_testcases)};{metric.ttf};{time_reduction};"
-                f"{metric.fitness};{metric.avg_precision}\n")
+            all_data_file += f"{i};{t};GA;optimal_approx;{end_exp - start_exp};" \
+                + f"{metric.detected_failures};{metric.undetected_failures};{len(metric.scheduled_testcases)};" \
+                + f"{len(metric.unscheduled_testcases)};{metric.ttf};{time_reduction};" \
+                + f"{metric.fitness};{metric.avg_precision}\n"
 
         end = time.time()
         print(f"Time expend to run the experiments: {end - start}")
 
+    print(f"Saving in {output_dir}{dataset}.csv")
+    with open(f"{output_dir}{dataset}.csv", "w") as f:
+        # Header
+        f.write(all_data_file)
 
 def main_test():
     dataset_dir = "/mnt/NAS/japlima/mab-datasets"
-    dataset = 'deeplearning4j@deeplearning4j'
+    dataset = 'alibaba@fastjson'
 
     if not os.path.exists(DEFAULT_EXPERIMENT_DIR):
         os.makedirs(DEFAULT_EXPERIMENT_DIR)
