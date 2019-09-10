@@ -2,7 +2,7 @@ import random
 
 from jmetal.core.problem import PermutationProblem
 from jmetal.core.solution import PermutationSolution, IntegerSolution
-from utils import sort_update_actions
+from src.utils import sort_update_actions
 
 
 class TCPCI(PermutationProblem):

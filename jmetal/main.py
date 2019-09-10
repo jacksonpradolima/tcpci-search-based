@@ -1,11 +1,11 @@
-import scenarios
+from src import scenarios
 
-from evaluation import NAPFDMetric
+from src.evaluation import NAPFDMetric
 from jmetal.algorithm.singleobjective.genetic_algorithm import GeneticAlgorithm
 # from jmetal.operator import BinaryTournamentSelection, SwapMutation, PMXCrossover
 from jmetal.util.observer import PrintObjectivesObserver
 from jmetal.util.termination_criterion import StoppingByEvaluations
-from jmetal.problem import TCPCI
+from src.jmetal.problem import TCPCI
 
 if __name__ == "__main__":
     metric = NAPFDMetric()

@@ -59,7 +59,8 @@ class IndustrialDatasetScenarioProvider():
 
         if self.name not in ['iofrol', 'paintcontrol', 'gsdtsr']:
             self.tcdf['LastResults'] = self.tcdf['LastResults'].apply(json.loads)
-        self.tcdf["Duration"] = self.tcdf["Duration"].apply(lambda x: float(x.replace(',', '')) if type(x) == str else x)
+        self.tcdf["Duration"] = self.tcdf["Duration"].apply(
+            lambda x: float(x.replace(',', '')) if type(x) == str else x)
 
         self.build = 0
         self.max_builds = max(self.tcdf.BuildId)
@@ -80,7 +81,7 @@ class IndustrialDatasetScenarioProvider():
             self.tc_fieldnames = ['Name', 'Duration', 'CalcPrio', 'LastRun', 'Verdict', 'LastResults']
         else:
             self.tc_fieldnames = ['Name', 'Duration', 'CalcPrio', 'LastRun', 'NumRan', 'NumErrors', 'Verdict',
-                              'LastResults']
+                                  'LastResults']
 
     def __str__(self):
         return self.name
@@ -114,7 +115,7 @@ class IndustrialDatasetScenarioProvider():
         self.scenario = VirtualScenario(testcases=seltc,
                                         available_time=total_time,
                                         build_id=self.build,
-                                        total_build_duration = self.total_build_duration)
+                                        total_build_duration=self.total_build_duration)
 
         return self.scenario
 

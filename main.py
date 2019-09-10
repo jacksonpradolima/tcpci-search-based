@@ -1,4 +1,3 @@
-import argparse
 import multiprocessing
 import numpy as np
 import os
@@ -82,32 +81,35 @@ def run_optimal(dataset, repo_path, output_dir, sched_time_ratio):
     all_data_file = "experiment;step;policy;reward_function;prioritization_time;detected;missed;tests_ran;tests_not_ran;"\
                     + "ttf;time_reduction;fitness;avg_precision\n"
 
+    # printar média....
+
     # 30 independent executions
     for i in range(1, 31):
         start = time.time()
 
         for (t, vsc) in enumerate(scenario_provider, start=1):
-            metric.update_available_time(vsc.get_available_time())
-            actions = vsc.get_testcases()
+            if(t == 462):
+                metric.update_available_time(vsc.get_available_time())
+                actions = vsc.get_testcases()
 
-            # Compute time
-            start_exp = time.time()
+                # Compute time
+                start_exp = time.time()
 
-            # Run GA to find the best NAPFD in current commit
-            ind = genetic_algorithm_tcp(actions, metric)
+                # Run GA to find the best NAPFD in current commit
+                ind = genetic_algorithm_tcp(actions, metric)
 
-            end_exp = time.time()
+                end_exp = time.time()
 
-            metric.evaluate(sort_update_actions(np.array(ind) + 1, actions))
+                metric.evaluate(sort_update_actions(np.array(ind) + 1, actions))
 
-            print(f"Run: {i} - Commit: {t} - Fitness: {metric.fitness} - Duration: {end_exp - start_exp}")
+                print(f"Run: {i} - Commit: {t} - Fitness: {metric.fitness} - Duration: {end_exp - start_exp}")
 
-            time_reduction = scenario_provider.total_build_duration - metric.ttf_duration
+                time_reduction = scenario_provider.total_build_duration - metric.ttf_duration
 
-            all_data_file += f"{i};{t};GA;optimal_approx;{end_exp - start_exp};" \
-                + f"{metric.detected_failures};{metric.undetected_failures};{len(metric.scheduled_testcases)};" \
-                + f"{len(metric.unscheduled_testcases)};{metric.ttf};{time_reduction};" \
-                + f"{metric.fitness};{metric.avg_precision}\n"
+                all_data_file += f"{i};{t};GA;optimal_approx;{end_exp - start_exp};" \
+                    + f"{metric.detected_failures};{metric.undetected_failures};{len(metric.scheduled_testcases)};" \
+                    + f"{len(metric.unscheduled_testcases)};{metric.ttf};{time_reduction};" \
+                    + f"{metric.fitness};{metric.avg_precision}\n"
 
         end = time.time()
         print(f"Time expend to run the experiments: {end - start}")
@@ -119,7 +121,8 @@ def run_optimal(dataset, repo_path, output_dir, sched_time_ratio):
 
 def main_test():
     dataset_dir = "/mnt/NAS/japlima/mab-datasets"
-    dataset = 'alibaba@fastjson'
+    # dataset = 'alibaba@fastjson'
+    dataset = 'deeplearning4j@deeplearning4j'
 
     if not os.path.exists(DEFAULT_EXPERIMENT_DIR):
         os.makedirs(DEFAULT_EXPERIMENT_DIR)
@@ -128,19 +131,20 @@ def main_test():
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(description='Optimal')
-
-    ap.add_argument('--dataset_dir', required=True)
-    ap.add_argument('--datasets', nargs='+', default=[], required=True,
-                    help='Datasets to analyse. Ex: \'deeplearning4j@deeplearning4j\'')
-
-    ap.add_argument('--sched_time_ratio', type=int, default=DEFAULT_SCHED_TIME_RATIO)
-    ap.add_argument('-o', '--output_dir', default=DEFAULT_EXPERIMENT_DIR)
-
-    args = ap.parse_args()
-
-    if not os.path.exists(args.output_dir):
-        os.makedirs(args.output_dir)
-
-    for dataset in args.datasets:
-        run_optimal(dataset, args.dataset_dir, args.output_dir, args.sched_time_ratio)
+    main_test()
+    # ap = argparse.ArgumentParser(description='Optimal')
+    #
+    # ap.add_argument('--dataset_dir', required=True)
+    # ap.add_argument('--datasets', nargs='+', default=[], required=True,
+    #                 help='Datasets to analyse. Ex: \'deeplearning4j@deeplearning4j\'')
+    #
+    # ap.add_argument('--sched_time_ratio', type=int, default=DEFAULT_SCHED_TIME_RATIO)
+    # ap.add_argument('-o', '--output_dir', default=DEFAULT_EXPERIMENT_DIR)
+    #
+    # args = ap.parse_args()
+    #
+    # if not os.path.exists(args.output_dir):
+    #     os.makedirs(args.output_dir)
+    #
+    # for dataset in args.datasets:
+    #     run_optimal(dataset, args.dataset_dir, args.output_dir, args.sched_time_ratio)
