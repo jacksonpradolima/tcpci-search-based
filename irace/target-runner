@@ -38,8 +38,8 @@ touch ${DAT_FILE}
 # (If you wish to ignore segmentation faults you can use '{}' around
 # the command.)
 #python -m scoop $EXE -v ${CONFIG_PARAMS} --datfile ${DAT_FILE} > ${LOGS} 2>&1
-#python3 $EXE -v ${CONFIG_PARAMS} --datfile ${DAT_FILE} --dataset_dir="/mnt/NAS/japlima/mab-datasets" --dataset='alibaba@fastjson' > ${LOGS} 2>&1
-python3 $EXE -v ${CONFIG_PARAMS} --datfile ${DAT_FILE} --dataset_dir="/mnt/NAS/japlima/mab-datasets" --dataset='deeplearning4j@deeplearning4j' > ${LOGS} 2>&1
+# python3 $EXE -v ${CONFIG_PARAMS} --datfile ${DAT_FILE} --dataset_dir="data" --dataset='alibaba@fastjson' > ${LOGS} 2>&1
+python3 $EXE -v ${CONFIG_PARAMS} --datfile ${DAT_FILE} --dataset_dir="data" --dataset='deeplearning4j@deeplearning4j' > ${LOGS} 2>&1
 
 error() {
     echo "`TZ=UTC date`: error: $@"

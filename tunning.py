@@ -22,7 +22,7 @@ __license__ = "MIT"
 __version__ = "1.0"
 
 # Empirical parameters
-CXPB, MUTPB, POP, NGEN = 0.8, 0.01, 150, 100
+CXPB, MUTPB, POP, NGEN = 0.8, 0.01, 150, 200
 
 DEFAULT_SCHED_TIME_RATIO = 0.5
 
@@ -91,20 +91,23 @@ def run_optimal(dataset, repo_path, datfile, sched_time_ratio=DEFAULT_SCHED_TIME
     start = time.time()
 
     for (t, vsc) in enumerate(scenario_provider, start=1):
-        start_exp = time.time()
-
         metric.update_available_time(vsc.get_available_time())
         actions = vsc.get_testcases()
+
+        # Compute time
+        start_exp = time.time()
 
         ind = [0]
         if (len(actions) > 1):
             # Run GA to find the best NAPFD in current commit
             ind = genetic_algorithm_tcp(actions, metric)
 
+        end_exp = time.time()
+
         metric.evaluate(sort_update_actions(np.array(ind)+1, actions))
         i += 1
         mean_fitness += metric.fitness
-        end_exp = time.time()
+
 
         logging.debug(f"commit: {t} - fitness: {metric.fitness} - duration: {end_exp - start_exp}")
 
