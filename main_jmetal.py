@@ -16,7 +16,7 @@ from problem import TCPCI
 if __name__ == "__main__":
     metric = NAPFDMetric()
 
-    repo_path = "/mnt/NAS/japlima/mab-datasets"
+    repo_path = "data"
     dataset = 'deeplearning4j@deeplearning4j'
 
     scenario_provider = scenarios.IndustrialDatasetScenarioProvider(f"{repo_path}/{dataset}/features-engineered.csv")
@@ -33,7 +33,8 @@ if __name__ == "__main__":
 
         if (IND_SIZE > 1):
             # Run GA to find the best NAPFD in current commit
-            problem = TCPCI(metric=metric, test_cases=test_cases, number_of_variables=IND_SIZE)
+            problem = TCPCI(metric=metric, test_cases=test_cases,
+                            number_of_variables=IND_SIZE)
 
             algorithm = GeneticAlgorithm(
                 problem=problem,
@@ -58,4 +59,3 @@ if __name__ == "__main__":
         # print('Solution: ' + str(result.variables[0]))
         # print('Fitness:  ' + str(result.objectives[0]))
         print()
-
