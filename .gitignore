@@ -108,3 +108,5 @@ results/
 *.dat
 *.log
 *.Rdata
+
+data/
