@@ -16,7 +16,7 @@ from reward import RNFailReward, RRankReward, TimeRankReward
 from utils import sort_update_actions
 from fitness import evaluate_prioritization
 
-from evaluation import NAPFDMetric
+from evaluation import NAPFDMetric, NAPFDVerdictMetric
 
 __author__ = "Jackson Antonio do Prado Lima"
 __email__ = "jacksonpradolima@gmail.com"
@@ -88,7 +88,7 @@ def run_optimal(dataset, repo_path, output_dir, sched_time_ratio):
     logging.debug(f"Running for {dataset}")
 
     metric = NAPFDVerdictMetric() if dataset in [
-        'iofrol', 'paintcontrol', 'gsdtsr', 'lexis'] else NAPFDMetric()
+        'iofrol', 'paintcontrol', 'gsdtsr', 'lexisnexis'] else NAPFDMetric()
 
     reward_functions = [RNFailReward(), RRankReward(), TimeRankReward()]
 

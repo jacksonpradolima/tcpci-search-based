@@ -31,7 +31,8 @@ class VirtualScenario(object):
         Get scenario metadata
         :return:
         """
-        execTimes, durations = zip(*[(tc['LastRun'], tc['Duration']) for tc in self.testcases()])
+        execTimes, durations = zip(
+            *[(tc['LastRun'], tc['Duration']) for tc in self.testcases()])
 
         metadata = {
             'availAgents': 1,
@@ -58,7 +59,8 @@ class IndustrialDatasetScenarioProvider():
         self.tcdf = pd.read_csv(tcfile, sep=';', parse_dates=['LastRun'])
 
         if self.name not in ['iofrol', 'paintcontrol', 'gsdtsr']:
-            self.tcdf['LastResults'] = self.tcdf['LastResults'].apply(json.loads)
+            self.tcdf['LastResults'] = self.tcdf['LastResults'].apply(
+                json.loads)
         self.tcdf["Duration"] = self.tcdf["Duration"].apply(
             lambda x: float(x.replace(',', '')) if type(x) == str else x)
 
@@ -77,8 +79,9 @@ class IndustrialDatasetScenarioProvider():
         # NumErrors | Test errors revealed
         # LastResults | List of previous test results(Failed: 1, Passed: 0), ordered by ascending age
 
-        if self.name in ['iofrol', 'paintcontrol', 'gsdtsr']:
-            self.tc_fieldnames = ['Name', 'Duration', 'CalcPrio', 'LastRun', 'Verdict', 'LastResults']
+        if self.name in ['iofrol', 'paintcontrol', 'gsdtsr', 'lexisnexis']:
+            self.tc_fieldnames = ['Name', 'Duration',
+                                  'CalcPrio', 'LastRun', 'Verdict', 'LastResults']
         else:
             self.tc_fieldnames = ['Name', 'Duration', 'CalcPrio', 'LastRun', 'NumRan', 'NumErrors', 'Verdict',
                                   'LastResults']
