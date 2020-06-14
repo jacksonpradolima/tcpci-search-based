@@ -16,11 +16,6 @@ from fitness import evaluate_prioritization
 
 from evaluation import NAPFDMetric
 
-__author__ = "Jackson Antonio do Prado Lima"
-__email__ = "jacksonpradolima@gmail.com"
-__license__ = "MIT"
-__version__ = "1.0"
-
 # Empirical parameters
 CXPB, MUTPB, POP, NGEN = 0.8, 0.01, 150, 200
 
